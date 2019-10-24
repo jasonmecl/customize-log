@@ -1,0 +1,13 @@
+<?php
+
+namespace Customize;
+
+use Illuminate\Support\Facades\Facade;
+
+class CustomizeFacade extends Facade
+{
+    protected static function getFacadeAccessor()
+    {
+        return 'customize-log';
+    }
+}

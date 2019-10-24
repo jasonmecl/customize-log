@@ -1,0 +1,19 @@
+{
+    "name": "eason/customize-log",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "沈家佑",
+            "email": "jia.you@program.com.tw"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Ford\\Escape\\": "src/Ford/Escape",
+            "Customize\\": "src/Customize"
+        }
+    }
+}
