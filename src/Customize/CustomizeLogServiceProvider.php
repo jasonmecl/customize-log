@@ -13,7 +13,7 @@ class CustomizeLogServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('customize-log', function () {
+        $this->app->singleton('customizeLog', function () {
             return new CustomizeLog();
         });
     }

@@ -8,6 +8,6 @@ class CustomizeFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'customize-log';
+        return 'customizeLog';
     }
 }
