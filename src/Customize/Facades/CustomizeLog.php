@@ -4,7 +4,7 @@ namespace Customize\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class CustomizeFacade extends Facade
+class CustomizeLog extends Facade
 {
     protected static function getFacadeAccessor()
     {
