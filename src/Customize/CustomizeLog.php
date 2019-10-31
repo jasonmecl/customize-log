@@ -84,7 +84,7 @@ class CustomizeLog
     }
 
     /**
-     * @description 產生Writer
+     * @description 產生 Writer
      * @param string $channel
      * @return Illuminate\Log\Writer
      */
