@@ -111,7 +111,7 @@ class CustomizeLog
 
             return $logger;
         } else {
-            throw new InvalidArgumentException("Driver [{$config['driver']}] is not supported.");
+            throw new \InvalidArgumentException("Driver [{$config['driver']}] is not supported.");
         }
     }
 
