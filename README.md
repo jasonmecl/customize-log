@@ -8,9 +8,12 @@
 * "laravel/framework": "5.2.0 - 5.6.0"
 
 ## Installation
+* Install package
 ```
 composer require customize-log/customize-log dev-master
-
+```
+* Generate logging.php file
+```
 php artisan vendor:publish
 ```
 ## Operation
