@@ -2,9 +2,6 @@
 
 namespace Customize;
 
-use Illuminate\Events\Dispatcher;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Log\Writer;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\HandlerInterface;
@@ -15,6 +12,9 @@ use Monolog\Logger;
 class CustomizeLog
 {
     const DEFAULT_FORMAT = "[%datetime%] %level_name%: %message% %context% %extra%\n";
+
+    protected $timezone;
+    protected $logLevel = 'info';
 
     protected $levels = [
         'debug' => Logger::DEBUG,
@@ -40,25 +40,27 @@ class CustomizeLog
     public function request($id)
     {
         $message = $_SERVER['REQUEST_URI'];
-        $context['ip'] = request()->ip();
+        $context['ip'] = $_SERVER['REMOTE_ADDR'];
         $context['request'] = $_REQUEST;
 
-        $this->log('info', "$message {$id}", $context);
+        $this->log($this->logLevel, "$message {$id}", $context);
     }
 
     /**
      * @description request
      * @param int $id
+     * @param boolean $status
+     * @param $response
      * @return void
      */
     public function response($id, $status, $response)
     {
         $message = $_SERVER['REQUEST_URI'];
-        $context['ip'] = request()->ip();
+        $context['ip'] = $_SERVER['REMOTE_ADDR'];
         $context['status'] = $status;
         $context['response'] = $response->content();
 
-        $this->log('info', "$message {$id}", $context);
+        $this->log($this->logLevel, "$message {$id}", $context);
     }
 
     /**
@@ -102,12 +104,20 @@ class CustomizeLog
      */
     protected function resolve($channel)
     {
+
         $config = $this->getConfiguration($channel);
         $driverMethod = 'generate' . ucfirst($config['driver']) . 'Driver';
 
         if (method_exists($this, $driverMethod)) {
             $logger = $this->{$driverMethod}($config);
-            $logger::setTimezone(new \DateTimeZone($this->app['config']['logging.channels.' . $channel . '.timezone']));
+
+            if (is_null($this->timezone) && isset($config['timezone'])) {
+                $this->timezone = $config['timezone'];
+            }
+
+            if (!is_null($this->timezone)) {
+                $logger::setTimezone(new \DateTimeZone($this->timezone));
+            }
 
             return $logger;
         } else {
@@ -118,13 +128,13 @@ class CustomizeLog
     /**
      * @description 產生 DailyDriver
      * @param array $config
-     * @return Monolog\Handler\RotatingFileHandler
+     * @return \Monolog\Logger
      */
     protected function generateDailyDriver(array $config)
     {
-        return new Logger($config['name'], [
-            $this->prepareHandler(new RotatingFileHandler(
-                $config['path'], $config['days'] ?? 7, $this->levels[$config['level']] ?? 'debug',
+        return new Logger($config['name'] ?? 'default', [
+            $this->formatHandler(new RotatingFileHandler(
+                $config['path'], $config['days'] ?? 7, $this->levels[$config['level'] ?? 'info'] ?? 'info',
                 $config['bubble'] ?? true, $config['permission'] ?? null, $config['locking'] ?? false
             )),
         ]);
@@ -133,11 +143,11 @@ class CustomizeLog
     /**
      * @description 產生 SingleDriver
      * @param array $config
-     * @return Monolog\Handler\StreamHandler
+     * @return \Monolog\Logger
      */
     protected function generateSingleDriver(array $config)
     {
-        return new Logger($config['name'], [$this->prepareHandler(new StreamHandler($config['path'])),]);
+        return new Logger($config['name'] ?? 'default', [$this->formatHandler(new StreamHandler($config['path'])),]);
     }
 
     /**
@@ -146,7 +156,7 @@ class CustomizeLog
      * @param array $config
      * @return Monolog\Handler\HandlerInterface
      */
-    protected function prepareHandler(HandlerInterface $handler, array $config = [])
+    protected function formatHandler(HandlerInterface $handler, array $config = [])
     {
         return $handler->setFormatter(new LineFormatter(self::DEFAULT_FORMAT, null, true, true));
     }
@@ -167,5 +177,23 @@ class CustomizeLog
     protected function getConfiguration($channel)
     {
         return $this->app['config']["logging.channels.{$channel}"];
+    }
+
+    /**
+     * @description 設置時區
+     * @return string $timezone
+     */
+    public function setLoggerTimezone(string $timezone)
+    {
+        $this->timezone = $timezone;
+    }
+
+    /**
+     * @description 設置Log層級
+     * @return string $level
+     */
+    public function setLoggerLevel(string $level)
+    {
+        $this->logLevel = $level;
     }
 }
