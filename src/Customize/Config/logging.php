@@ -11,7 +11,7 @@ return [
             // 日志存放路径
             'path' => storage_path('logs/default.log'),
             // 日誌周期
-            'days' => 1,
+            'days' => 7,
             // 日誌時區
             'timezone' => 'Asia/Taipei'
         ],

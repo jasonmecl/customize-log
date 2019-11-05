@@ -134,7 +134,7 @@ class CustomizeLog
     {
         return new Logger($config['name'] ?? 'default', [
             $this->formatHandler(new RotatingFileHandler(
-                $config['path'], $config['days'] ?? 7, $this->levels[$config['level'] ?? 'info'] ?? 'info',
+                $config['path'], $config['days'] ?? 7, $this->levels[$config['level'] ?? 'debug'] ?? 'debug',
                 $config['bubble'] ?? true, $config['permission'] ?? null, $config['locking'] ?? false
             )),
         ]);
