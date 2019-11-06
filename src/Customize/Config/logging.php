@@ -5,7 +5,6 @@ return [
     'channels' => [
         //自定义频道
         'default' => [
-            'name' => 'default',
             // 日志驱动模式
             'driver' => 'single',
             // 日志存放路径
