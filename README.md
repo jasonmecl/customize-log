@@ -5,7 +5,7 @@
 ## Require
 * "php": ">=7.0.33",
 * "monolog/monolog": "^1.0.0",
-* "laravel/framework": "5.2.0 - 5.6.0"
+* "illuminate/log": "5.2.0 - 5.6.0"
 
 ## Installation
 * Install package
