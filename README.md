@@ -3,7 +3,7 @@
 * Driver only support single & daily
 
 ## Require
-* "php": ">=7.1.3",
+* "php": ">=7.0.33",
 * "monolog/monolog": "^1.0.0",
 * "laravel/framework": "5.2.0 - 5.6.0"
 
