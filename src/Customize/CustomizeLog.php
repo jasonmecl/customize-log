@@ -56,7 +56,7 @@ class CustomizeLog
     public function response($id, $status, $response)
     {
         $message = $_SERVER['REQUEST_URI'];
-        $context['ip'] = $_SERVER['REMOTE_ADDR'];
+        $context['ip'] = $_SERVER['REMOTE_ADDR'] ?? '';
         $context['status'] = $status;
         $context['response'] = $response->content();
 
