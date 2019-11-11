@@ -40,7 +40,7 @@ class CustomizeLog
     public function request($id)
     {
         $message = $_SERVER['REQUEST_URI'];
-        $context['ip'] = $_SERVER['REMOTE_ADDR'];
+        $context['ip'] = $_SERVER['REMOTE_ADDR'] ?? '';
         $context['request'] = $_REQUEST;
 
         $this->log($this->logLevel, "$message {$id}", $context);
