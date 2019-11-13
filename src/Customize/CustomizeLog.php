@@ -53,12 +53,12 @@ class CustomizeLog
      * @param $response
      * @return void
      */
-    public function response($id, $status, $response)
+    public function response($id, $status, $content)
     {
         $message = $_SERVER['REQUEST_URI'] ?? '';
         $context['ip'] = $_SERVER['REMOTE_ADDR'] ?? '';
         $context['status'] = $status;
-        $context['response'] = $response->content();
+        $context['response'] = $content;
 
         $this->log($this->logLevel, "$message {$id}", $context);
     }
@@ -147,7 +147,7 @@ class CustomizeLog
      */
     protected function generateSingleDriver(array $config)
     {
-        return new Logger($config['name'] ?? 'default', [$this->formatHandler(new StreamHandler($config['path'])),]);
+        return new Logger($config['name'] ?? 'default', [$this->formatHandler(new StreamHandler($config['path'], $this->levels[$config['level'] ?? 'debug'] ?? 'debug', $config['bubble'] ?? true, $config['permission'] ?? null, $config['locking'] ?? false)),]);
     }
 
     /**

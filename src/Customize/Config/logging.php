@@ -12,7 +12,9 @@ return [
             // 日誌周期
             'days' => 7,
             // 日誌時區
-            'timezone' => 'Asia/Taipei'
+            'timezone' => 'Asia/Taipei',
+            // 日誌權限
+            'permission' => 0644
         ],
     ],
 ];
