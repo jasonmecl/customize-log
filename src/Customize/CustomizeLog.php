@@ -56,7 +56,7 @@ class CustomizeLog
     {
         $message = $_SERVER['REQUEST_URI'] ?? '';
         $context['ip'] = $_SERVER['REMOTE_ADDR'] ?? '';
-        $context['status'] = $status;
+        $context['response_status'] = $status;
 
         if($status == true) {
             $this->log($this->infoLevel, "$message {$id}", $context);
