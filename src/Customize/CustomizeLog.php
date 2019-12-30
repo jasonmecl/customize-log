@@ -1,5 +1,4 @@
 <?php
-
 namespace Customize;
 
 use Illuminate\Log\Writer;
@@ -14,7 +13,8 @@ class CustomizeLog
     const DEFAULT_FORMAT = "[%datetime%] %level_name%: %message% %context% %extra%\n";
 
     protected $timezone;
-    protected $logLevel = 'info';
+    protected $infoLevel = 'info';
+    protected $errorLevel = 'error';
 
     protected $levels = [
         'debug' => Logger::DEBUG,
@@ -43,7 +43,7 @@ class CustomizeLog
         $context['ip'] = $_SERVER['REMOTE_ADDR'] ?? '';
         $context['request'] = $_REQUEST ?? '';
 
-        $this->log($this->logLevel, "$message {$id}", $context);
+        $this->log($this->infoLevel, "$message {$id}", $context);
     }
 
     /**
@@ -58,9 +58,13 @@ class CustomizeLog
         $message = $_SERVER['REQUEST_URI'] ?? '';
         $context['ip'] = $_SERVER['REMOTE_ADDR'] ?? '';
         $context['status'] = $status;
-        $context['response'] = $content;
 
-        $this->log($this->logLevel, "$message {$id}", $context);
+        if($status == true) {
+            $this->log($this->infoLevel, "$message {$id}", $context);
+        }else{
+            $context['response'] = $content;
+            $this->log($this->errorLevel, "$message {$id}", $context);
+        }
     }
 
     /**
@@ -104,7 +108,6 @@ class CustomizeLog
      */
     protected function resolve($channel)
     {
-
         $config = $this->getConfiguration($channel);
         $driverMethod = 'generate' . ucfirst($config['driver']) . 'Driver';
 
@@ -134,9 +137,9 @@ class CustomizeLog
     {
         return new Logger($config['name'] ?? 'default', [
             $this->formatHandler(new RotatingFileHandler(
-                $config['path'], $config['days'] ?? 7, $this->levels[$config['level'] ?? 'debug'] ?? 'debug',
-                $config['bubble'] ?? true, $config['permission'] ?? null, $config['locking'] ?? false
-            )),
+                                     $config['path'], $config['days'] ?? 7, $this->levels[$config['level'] ?? 'debug'] ?? 'debug',
+                                     $config['bubble'] ?? true, $config['permission'] ?? null, $config['locking'] ?? false
+                                 )),
         ]);
     }
 
