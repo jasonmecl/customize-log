@@ -35,12 +35,17 @@ class CustomizeLog
     /**
      * @description request
      * @param int $id
+     * @param boolean $debugFlag
      * @return void
      */
-    public function request($id)
+    public function request($id, $debugFlag)
     {
         $message = $_SERVER['REQUEST_URI'] ?? '';
         $context['ip'] = $_SERVER['REMOTE_ADDR'] ?? '';
+
+        if($debugFlag) {
+            $context['request'] = $_REQUEST ?? '';
+        }
 
         $this->log($this->infoLevel, "$message {$id}", $context);
     }
@@ -49,14 +54,19 @@ class CustomizeLog
      * @description request
      * @param int $id
      * @param boolean $status
-     * @param $response
+     * @param string $content
+     * @param boolean $debugFlag
      * @return void
      */
-    public function response($id, $status, $content)
+    public function response($id, $status, $content, $debugFlag)
     {
         $message = $_SERVER['REQUEST_URI'] ?? '';
         $context['ip'] = $_SERVER['REMOTE_ADDR'] ?? '';
-        $context['response_status'] = $status;
+        $context['status'] = $status;
+
+        if($debugFlag) {
+            $context['response'] = $content ?? '';
+        }
 
         if($status == true) {
             $this->log($this->infoLevel, "$message {$id}", $context);
