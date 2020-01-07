@@ -38,7 +38,7 @@ class CustomizeLog
      * @param boolean $debugFlag
      * @return void
      */
-    public function request($id, $debugFlag)
+    public function request($id, $debugFlag = false)
     {
         $message = $_SERVER['REQUEST_URI'] ?? '';
         $context['ip'] = $_SERVER['REMOTE_ADDR'] ?? '';
@@ -58,7 +58,7 @@ class CustomizeLog
      * @param boolean $debugFlag
      * @return void
      */
-    public function response($id, $status, $content, $debugFlag)
+    public function response($id, $status, $content, $debugFlag = false)
     {
         $message = $_SERVER['REQUEST_URI'] ?? '';
         $context['ip'] = $_SERVER['REMOTE_ADDR'] ?? '';
