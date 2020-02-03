@@ -38,14 +38,12 @@ class CustomizeLog
      * @param boolean $debugFlag
      * @return void
      */
-    public function request($id, $debugFlag = false)
+    public function request($id)
     {
         $message = $_SERVER['REQUEST_URI'] ?? '';
         $context['ip'] = $_SERVER['REMOTE_ADDR'] ?? '';
-
-        if($debugFlag) {
-            $context['request'] = $_REQUEST ?? '';
-        }
+        $context['load_average'] = json_encode(sys_getloadavg()) ?? '';
+        $context['request'] = $_REQUEST ?? '';
 
         $this->log($this->infoLevel, "$message {$id}", $context);
     }
@@ -62,18 +60,14 @@ class CustomizeLog
     {
         $message = $_SERVER['REQUEST_URI'] ?? '';
         $context['ip'] = $_SERVER['REMOTE_ADDR'] ?? '';
+        $context['load_average'] = json_encode(sys_getloadavg()) ?? '';
         $context['status'] = $status;
 
-        if($debugFlag) {
+        if($debugFlag || !$status) {
             $context['response'] = $content ?? '';
         }
 
-        if($status == true) {
-            $this->log($this->infoLevel, "$message {$id}", $context);
-        }else{
-            $context['response'] = $content;
-            $this->log($this->errorLevel, "$message {$id}", $context);
-        }
+        $this->log($status ? $this->infoLevel : $this->errorLevel, "$message {$id}", $context);
     }
 
     /**
@@ -146,9 +140,9 @@ class CustomizeLog
     {
         return new Logger($config['name'] ?? 'default', [
             $this->formatHandler(new RotatingFileHandler(
-                                     $config['path'], $config['days'] ?? 7, $this->levels[$config['level'] ?? 'debug'] ?? 'debug',
-                                     $config['bubble'] ?? true, $config['permission'] ?? null, $config['locking'] ?? false
-                                 )),
+                $config['path'], $config['days'] ?? 7, $this->levels[$config['level'] ?? 'debug'] ?? 'debug',
+                $config['bubble'] ?? true, $config['permission'] ?? null, $config['locking'] ?? false
+            )),
         ]);
     }
 
