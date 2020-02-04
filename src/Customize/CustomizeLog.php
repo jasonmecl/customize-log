@@ -42,7 +42,7 @@ class CustomizeLog
     {
         $message = $_SERVER['REQUEST_URI'] ?? '';
         $context['ip'] = $_SERVER['REMOTE_ADDR'] ?? '';
-        $context['load_average'] = json_encode(sys_getloadavg()) ?? '';
+        $context['load_average_1m'] = sys_getloadavg()[0] ?? '';
         $context['request'] = $_REQUEST ?? '';
 
         $this->log($this->infoLevel, "$message {$id}", $context);
@@ -60,7 +60,7 @@ class CustomizeLog
     {
         $message = $_SERVER['REQUEST_URI'] ?? '';
         $context['ip'] = $_SERVER['REMOTE_ADDR'] ?? '';
-        $context['load_average'] = json_encode(sys_getloadavg()) ?? '';
+        $context['load_average_1m'] = sys_getloadavg()[0] ?? '';
         $context['status'] = $status;
 
         if($debugFlag || !$status) {
